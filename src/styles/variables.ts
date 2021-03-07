@@ -4,19 +4,17 @@ export const variables = css`
   /**colors */
   --black: #333;
   --white: #fff;
-  --grey: #f2f2f2;
-  --grey-50: #f7f7f7;
-  --grey-100: #eee;
-  --grey-200: #e7e7e7;
-  --grey-300: #ddd;
-  --grey-400: #ccc;
-  --grey-500: #999;
-  --grey-600: #666;
-  --grey-700: #555;
-  --grey-800: #444;
-  --grey-900: #333;
+  --grey: #999;
   /**headings */
+  --heading-h1-font-size: 3rem;
   --heading-h4-font-size: 1.5rem;
   /**border */
-  --border-radius: 5px;
+  --border-radius: 0.625rem;
+  /**shadows */
+  --card-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+  /**text */
+  --regular-text-size: 0.938rem;
+  --small-text-size: 0.75rem;
+  /**opacity */
+  --disabled-opacity: 0.3;
 `;
