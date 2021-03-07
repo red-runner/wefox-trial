@@ -1,8 +1,8 @@
-import React from "react";
 import { Text } from "../text";
 import { Heading } from "../heading";
 
 import { StylesWrapper } from "./styles";
+import close from "../../assets/close.svg";
 
 type Props = {
   title: string;
@@ -21,9 +21,13 @@ export const Component = ({ title, src, onDelete, content, date }: Props) => (
       <div className="content-wrapper">
         <Heading level={Heading.Levels.H4}>{title}</Heading>
         <Text>{content}</Text>
-        <button onClick={onDelete}>Delete</button>
       </div>
+      <button onClick={onDelete}>
+        <img src={close} alt="close" />
+      </button>
     </div>
-    <Text size={Text.Sizes.Small}>{date}</Text>
+    <Text size={Text.Sizes.Small} alignment={Text.Alignment.Right}>
+      {date}
+    </Text>
   </StylesWrapper>
 );

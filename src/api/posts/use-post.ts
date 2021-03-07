@@ -1,21 +1,19 @@
 import useSWR from "swr";
 import { fetcher } from "../fetcher";
 import { mutate, Methods } from "../mutate";
-
-type Post = {
-  id?: string;
-  title: string;
-  content: string;
-  lat: string;
-  long: string;
-  image_url: string;
-};
+import { Post } from "../types";
 
 export const usePost = () => {
-  const { data } = useSWR(`http://localhost:3000/api/v1/posts`, fetcher);
+  const { data, ...otherSWR } = useSWR(
+    `http://localhost:3000/api/v1/posts`,
+    fetcher,
+    {
+      errorRetryCount: 2,
+    }
+  );
 
   return {
-    posts: data ? data : [],
+    posts: data instanceof Object && data instanceof Array ? data : [],
     create: async ({ title, content, lat, long, image_url }: Post) =>
       await mutate(
         `http://localhost:3000/api/v1/posts`,
@@ -49,5 +47,6 @@ export const usePost = () => {
         {},
         Methods.DELETE
       ),
+    ...otherSWR,
   };
 };
