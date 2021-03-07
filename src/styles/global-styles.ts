@@ -21,7 +21,7 @@ export const GlobalStyles = createGlobalStyle`
 
 			.app {
 				text-align: center;
-				background-color: rgb(145, 152, 248);
+				background-color: var(--main-background);
 			}
 		}
 	}
