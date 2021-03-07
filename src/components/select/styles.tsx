@@ -28,4 +28,4 @@ export const StylesWrapper = styled.fieldset`
   }
 `;
 
-StylesWrapper.displayName = "TextStylesWrapper";
+StylesWrapper.displayName = "SelectStylesWrapper";

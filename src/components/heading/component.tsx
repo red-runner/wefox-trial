@@ -1,5 +1,5 @@
-import classNames from "classnames";
-import React, { FC, HTMLProps } from "react";
+import classnames from "classnames";
+import { FC, HTMLProps } from "react";
 import styled from "styled-components";
 import { headings, alignments } from "../../styles";
 
@@ -16,9 +16,10 @@ enum Alignment {
   Right = "right-aligned",
 }
 
-type Props = Omit<HTMLProps<HTMLHeadingElement>, "ref" | "as" | "alignment"> & {
+type Props = {
   level?: Levels;
   alignment?: Alignment;
+  children: string;
 };
 
 type HeadingComponent<P> = FC<P> & {
@@ -32,6 +33,7 @@ export const headingLevels: {
   [Levels.H1]: styled.h1`
     ${headings}
     ${alignments}
+    font-size: var(--heading-h1-font-size);
   `,
   [Levels.H2]: styled.h2`
     ${headings}
@@ -45,6 +47,7 @@ export const headingLevels: {
     ${headings}
     ${alignments}
     font-size: var(--heading-h4-font-size);
+    line-height: 1.5rem;
   `,
 };
 
@@ -56,7 +59,7 @@ export const Component: HeadingComponent<Props> = ({
   const Heading = headingLevels[level || Levels.H1];
 
   return (
-    <Heading className={classNames(alignment as string)}>{children}</Heading>
+    <Heading className={classnames(alignment as string)}>{children}</Heading>
   );
 };
 Component.displayName = "Heading";

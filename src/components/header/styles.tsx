@@ -27,3 +27,5 @@ export const StylesWrapper = styled.header`
     margin-bottom: 8px;
   }
 `;
+
+StylesWrapper.displayName = "HeaderStylesWrapper";

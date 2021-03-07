@@ -58,4 +58,4 @@ export const PUBLISHED_POSTS_HEADING = "Update a title for your post";
 export const SELECT_PUBLISHED_PLACEHOLDER = "Select a published post";
 export const SELECT_TITLE_PLACEHOLDER = "Select one of your titles";
 
-export const SECTION_UPDATE_BUTTON = "Publish";
+export const SECTION_UPDATE_BUTTON = "Update";
