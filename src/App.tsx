@@ -1,64 +1,188 @@
-import React from "react";
-import logo from "./logo.svg";
-import { Text, Heading, Post } from "./components";
+import React, { useState } from "react";
+import {
+  Heading,
+  Post,
+  StylesPage,
+  Select,
+  Button,
+  Header,
+} from "./components";
 import { usePost } from "./api";
+import { Post as PostType } from "./api/types";
+import {
+  POST_BACKLOG,
+  POST_TITLES,
+  MAIN_HEADING,
+  SECTION_BACKLOG_HEADING,
+  SECTION_BACKLOG_BUTTON,
+  SECTION_BACKLOG_PLACEHOLDER,
+  SECTION_UPDATE_BUTTON,
+  SELECT_PUBLISHED_PLACEHOLDER,
+  SELECT_TITLE_PLACEHOLDER,
+  PUBLISHED_POSTS_HEADING,
+} from "./constants";
 
 export const App = () => {
-  const { posts, create, remove } = usePost();
+  type Options = { value: string; label?: string }[];
+
+  const { posts, create, remove, revalidate, update } = usePost();
+
+  const [backlogPost, setBacklogPost] = useState<PostType>({});
+  const [publishedPost, setPublishedPost] = useState<PostType>({});
+  const [selectedTitle, setSelectedTitle] = useState<string | undefined>();
+
+  const getSelectOptions = (options: { title: string }[]) =>
+    options?.map(({ title }: { title: string }) => ({
+      value: title,
+      label: title,
+    })) as Options;
+
+  const getPost = (item: string, _post: { title: string }[]) =>
+    _post.filter(({ title }: { title: string }) => title === item)[0];
+
+  const handleBacklogSelection = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const entry = getPost(event.target.value, POST_BACKLOG);
+
+    entry && setBacklogPost(entry);
+  };
+
+  const handlePublishedPostSelection = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const entry = getPost(event.target.value, posts);
+
+    entry && setPublishedPost(entry);
+  };
+
+  const handleSelectedTitle = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const entry = event.target.value;
+
+    entry && setSelectedTitle(entry);
+  };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <Heading level={Heading.Levels.H4}>Heading H4</Heading>
-        <Text>Learn React</Text>
-        <button
-          onClick={async () => {
-            await create({
-              title: "Divine London",
-              content: "hi ha una mica de pols a la pastera",
-              image_url:
-                "https://images.unsplash.com/photo-1609678379165-9fb914c132c0?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1245&q=80",
-              lat: "40.41678",
-              long: "-3.70379",
-            });
-          }}
-        >
-          I CREATE POST
-        </button>
-        {posts instanceof Object &&
-          posts instanceof Array &&
-          posts.map(
-            (
-              {
-                id,
-                content,
-                image_url,
-                title,
-                updated_at,
-              }: {
-                id: string;
-                content: string;
-                image_url: string;
-                title: string;
-                updated_at: string;
-              },
-              index: number
-            ) => (
-              <Post
-                key={index}
-                title={title}
-                content={content}
-                src={image_url}
-                date={updated_at}
-                onDelete={() => remove(id)}
-              />
-            )
-          )}
-      </header>
-    </div>
+    <StylesPage className="app">
+      <Header title="wefox-group" />
+      <main className="main-content">
+        <Heading alignment={Heading.Alignment.Left} level={Heading.Levels.H1}>
+          {MAIN_HEADING}
+        </Heading>
+
+        <div className="section-wrapper">
+          <section className="post-selection">
+            <Heading
+              alignment={Heading.Alignment.Left}
+              level={Heading.Levels.H3}
+            >
+              {SECTION_BACKLOG_HEADING}
+            </Heading>
+            <Select
+              placeholder={SECTION_BACKLOG_PLACEHOLDER}
+              value={backlogPost?.title ? backlogPost?.title : ""}
+              onChange={handleBacklogSelection}
+              options={getSelectOptions(POST_BACKLOG)}
+            />
+            <Button
+              disabled={Object.keys(backlogPost).length === 0}
+              onClick={() => {
+                try {
+                  create(backlogPost).then((response) => console.log(response));
+                } catch (error) {
+                  new Error(error.message);
+                }
+              }}
+            >
+              {SECTION_BACKLOG_BUTTON}
+            </Button>
+          </section>
+
+          <section className="post-update">
+            <Heading
+              alignment={Heading.Alignment.Left}
+              level={Heading.Levels.H3}
+            >
+              {PUBLISHED_POSTS_HEADING}
+            </Heading>
+            <Select
+              className="published-posts"
+              placeholder={SELECT_PUBLISHED_PLACEHOLDER}
+              value={publishedPost?.title ? publishedPost?.title : ""}
+              onChange={handlePublishedPostSelection}
+              options={getSelectOptions(posts)}
+            />
+            <Select
+              className="titles"
+              placeholder={SELECT_TITLE_PLACEHOLDER}
+              value={selectedTitle ? selectedTitle : ""}
+              onChange={handleSelectedTitle}
+              options={POST_TITLES}
+            />
+            <Button
+              disabled={
+                Object.keys(publishedPost).length === 0 || !selectedTitle
+              }
+              onClick={() => {
+                const updatedPost = publishedPost;
+                updatedPost.title = selectedTitle;
+
+                try {
+                  update(updatedPost).then(() => {
+                    revalidate();
+                  });
+                } catch (error) {
+                  new Error(error.message);
+                }
+              }}
+            >
+              {SECTION_UPDATE_BUTTON}
+            </Button>
+          </section>
+        </div>
+        <ul className="post-list">
+          {posts instanceof Object &&
+            posts instanceof Array &&
+            posts.map(
+              (
+                {
+                  id,
+                  content,
+                  image_url,
+                  title,
+                  updated_at,
+                }: {
+                  id: string;
+                  content: string;
+                  image_url: string;
+                  title: string;
+                  updated_at: string;
+                },
+                index: number
+              ) => (
+                <li key={index}>
+                  <Post
+                    title={title}
+                    content={content}
+                    src={image_url}
+                    date={`Last updated: ${new Date(
+                      updated_at
+                    ).toLocaleDateString("en-US")}`}
+                    onDelete={() => {
+                      try {
+                        remove(id).then(() => {
+                          revalidate();
+                        });
+                      } catch (error) {
+                        new Error(error.message);
+                      }
+                    }}
+                  />
+                </li>
+              )
+            )}
+        </ul>
+      </main>
+    </StylesPage>
   );
 };
