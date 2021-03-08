@@ -4,7 +4,7 @@ import classnames from "classnames";
 
 import { StylesWrapper } from "./styles";
 
-type Options = { value: string; label?: string }[];
+export type Options = { value: string; label?: string }[];
 
 export type Props = {
   name?: string;

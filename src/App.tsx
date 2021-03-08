@@ -7,6 +7,8 @@ import {
   Button,
   Header,
 } from "./components";
+
+import { Options } from "./components/select/component";
 import { usePost } from "./api";
 import { Post as PostType } from "./api/types";
 import {
@@ -23,8 +25,6 @@ import {
 } from "./constants";
 
 export const App = () => {
-  type Options = { value: string; label?: string }[];
-
   const { posts, create, remove, revalidate, update } = usePost();
 
   const [backlogPost, setBacklogPost] = useState<PostType>({});
