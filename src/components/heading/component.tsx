@@ -28,7 +28,7 @@ type HeadingComponent<P> = FC<P> & {
 };
 
 export const headingLevels: {
-  [key in Levels]: FC<Omit<HTMLProps<HTMLHeadingElement>, "ref" | "as">>;
+  [key in Levels]: FC<HTMLProps<HTMLHeadingElement>>;
 } = {
   [Levels.H1]: styled.h1`
     ${headings}

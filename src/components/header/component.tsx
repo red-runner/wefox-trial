@@ -1,4 +1,3 @@
-import React from "react";
 import { StylesWrapper } from "./styles";
 
 import { Heading } from "../heading";
